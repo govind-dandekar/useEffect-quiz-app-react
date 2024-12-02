@@ -14,6 +14,18 @@ function Question({
 		isCorrect: null
 	});
 
+	let timer = 10000;
+
+	// reset timer is user chooses and answer; 
+	// removes race condition
+	if (answer.selectedAnswer) {
+		timer = 1000;
+	}
+
+	if (answer.isCorrect !== null){
+		timer = 2000;
+	}
+
 	function handleSelectAnswer(answer){
 		setAnswer({
 			selectedAnswer: answer,
@@ -49,8 +61,10 @@ function Question({
 						key changes, react will unmount old and remount new component;
 						key can be set on any element or component */}
 				<QuestionTimer
-					timeout={10000}
-					onTimeout={onSkipAnswer}
+					key={timer}
+					timeout={timer}
+					onTimeout={answer.selectedAnswer === '' ? onSkipAnswer : null}
+					mode={answerState}
 				/>
 				<h2>{QUESTIONS[questionIndex].text}</h2>
 				{/* not allowed to use same key on different components */}
